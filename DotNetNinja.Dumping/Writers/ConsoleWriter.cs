@@ -9,49 +9,61 @@ namespace DotNetNinja.Dumping
     {
         public void Write(ObjectDump dump)
         {
-            WriteDump(dump);
+            WriteDump(dump, 0);
             Console.WriteLine("$ properties:");
             foreach (var property in dump.Properties)
             {
-                WriteProperty(property);
+                WriteProperty(property, 0);
             }
 
             Console.ResetColor();
         }
 
-        void WriteProperty(PropertyDump property)
+        void WriteProperty(PropertyDump property, int indentationLevel)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write($"+ {property.Name}: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"{property.Value}");
 
-            WriteDump(property);
+            WriteDump(property, 2);
         }
 
-        void WriteDump(Dump dump)
+        void WriteDump(Dump dump, int indentationLevel)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
 
+            var indentation = GetIndentation(indentationLevel);
+
             if (dump.HashCode != null)
             {
-                Console.WriteLine($"$ hashCode: {dump.HashCode}");
+                Console.WriteLine($"{indentation}$ hashCode: {dump.HashCode}");
             }
 
             if (dump.TypeName != null)
             {
-                Console.WriteLine($"$ type: {dump.TypeName}");
+                Console.WriteLine($"{indentation}$ type: {dump.TypeName}");
             }
 
             foreach (var metadata in dump.Metadata)
             {
-                Console.WriteLine($"  > {metadata.Key}: {metadata.Value}");
+                Console.WriteLine($"{indentation}  > {metadata.Key}: {metadata.Value}");
             }
 
             if (dump.Metadata.Count != 0)
             {
-                Console.WriteLine(" ---");
+                Console.WriteLine($"{indentation}  ---");
             }
+        }
+
+        string GetIndentation(int indentationLevel)
+        {
+            var indentation = "";
+            for (int i = 0; i < indentationLevel; i++)
+            {
+                indentation += " ";
+            }
+            return indentation;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DotNetNinja.Dumping
 {
-    public class FluentDump<TObj> : IFluentDump
+    public class FluentDumping<TObj> : IFluentDumping
     {
         TObj _obj;
         IDumper _dumper;
@@ -14,7 +14,7 @@ namespace DotNetNinja.Dumping
         IConsoleWriter _writer;
         Expression<Func<TObj, object>>[] _properties;
 
-        public FluentDump(TObj obj, IDumper dumper, IConsoleWriter consoleWriter)
+        public FluentDumping(TObj obj, IDumper dumper, IConsoleWriter consoleWriter)
         {
             _obj = obj;
             _dumper = dumper;
@@ -22,7 +22,7 @@ namespace DotNetNinja.Dumping
             _writer = consoleWriter;
         }
 
-        public IFluentDump Dump(params Expression<Func<TObj, object>>[] properties)
+        public IFluentDumping Dump(params Expression<Func<TObj, object>>[] properties)
         {
             _properties = properties;
             return this;
@@ -33,19 +33,19 @@ namespace DotNetNinja.Dumping
             _writer.Write(_dumper.Dump(_obj, _directives, _properties));
         }
 
-        public IFluentDump WithHashCode()
+        public IFluentDumping WithHashCode()
         {
             _directives |= DumpDirectives.HashCode;
             return this;
         }
 
-        public IFluentDump WithMemberInfo()
+        public IFluentDumping WithMemberInfo()
         {
             _directives |= DumpDirectives.MemberInfo;
             return this;
         }
 
-        public IFluentDump WithMetadata()
+        public IFluentDumping WithMetadata()
         {
             _directives |= DumpDirectives.Metadata;
             return this;

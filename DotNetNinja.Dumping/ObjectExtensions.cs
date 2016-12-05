@@ -8,9 +8,9 @@ namespace DotNetNinja.Dumping
 {
     public static class ObjectExtensions
     {
-        public static IFluentDump Dump<TObj>(this TObj obj, params Expression<Func<TObj, object>>[] properties)
+        public static IFluentDumping Dump<TObj>(this TObj obj, params Expression<Func<TObj, object>>[] properties)
         {
-            var dumping = new FluentDump<TObj>(obj, new Dumper(), new ConsoleWriter());
+            var dumping = new FluentDumping<TObj>(obj, new Dumper(), new ConsoleWriter());
             dumping.Dump(properties);
             return dumping;
         }

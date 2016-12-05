@@ -9,7 +9,7 @@ namespace DotNetNinja.Dumping
             var model = new TestModel();
 
             model
-                .Dump(m => m.Integer)
+                .Dump(m => m.Integer, m => m.String)
                 .WithMemberInfo()
                 .WithMetadata()
                 .ToConsole();

@@ -17,7 +17,7 @@ namespace DotNetNinja.Dumping
             : base(metadata, typeName, hashCode)
         {
             Name = name;
-            Value = value?.ToString() ?? "[null}";
+            Value = value?.ToString() ?? "[null]";
         }
     }
 }

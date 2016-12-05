@@ -67,14 +67,14 @@ namespace DotNetNinja.Dumping
                     hashCode = obj.GetHashCode().ToString();
                 }
 
-                yield return new PropertyDump(propertyName, propertyValue.ToString(), metadata, propertyTypeName, hashCode);
+                yield return new PropertyDump(propertyName, propertyValue, metadata, propertyTypeName, hashCode);
             }
         }
 
         string ExtractPropertyName<TObj>(Expression<Func<TObj, object>> expression)
         {
             var unaryExpression = expression.Body as UnaryExpression;
-            var memberExpression = unaryExpression.Operand as MemberExpression;
+            var memberExpression = unaryExpression?.Operand as MemberExpression ?? expression.Body as MemberExpression;
             return memberExpression.Member.Name;
         }
 
