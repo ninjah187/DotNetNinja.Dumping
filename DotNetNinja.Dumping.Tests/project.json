@@ -1,0 +1,29 @@
+{
+  "version": "0.1.0",
+  "title": "DotNetNinja.Dumping tests",
+  "description": "Tests for DotNetNinja.Dumping.",
+  "copyright": "Karol Hinz",
+  "authors": [ "Karol Hinz" ],
+
+  "dependencies": {
+    "DotNetNinja.Dumping": "0.1.0",
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.1"
+        }
+      }
+    }
+  },
+
+  "scripts": {},
+
+  "testRunner": "xunit"
+}
+
