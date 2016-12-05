@@ -1,12 +1,20 @@
 ﻿using System;
 
-namespace ConsoleApplication
+namespace DotNetNinja.Dumping
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var model = new TestModel();
+
+            model
+                .Dump(m => m.Integer)
+                .WithMemberInfo()
+                .WithMetadata()
+                .ToConsole();
+
+            Console.ReadKey();
         }
     }
 }
