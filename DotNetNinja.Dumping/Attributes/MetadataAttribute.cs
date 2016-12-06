@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DotNetNinja.Dumping.Attributes
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = true)]
     public class MetadataAttribute : Attribute
     {
         public Metadata Metadata { get; }

@@ -8,6 +8,6 @@ namespace DotNetNinja.Dumping
 {
     public interface IDumper
     {
-        ObjectDump Dump<TObj>(TObj obj, DumpDirectives directives, params Expression<Func<TObj, object>>[] properties);
+        ObjectDump Dump<TObj>(ObjectDumpSettings<TObj> settings);
     }
 }

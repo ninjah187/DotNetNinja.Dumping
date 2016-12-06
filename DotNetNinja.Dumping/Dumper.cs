@@ -11,9 +11,11 @@ namespace DotNetNinja.Dumping
 {
     public class Dumper : IDumper
     {
-        public ObjectDump Dump<TObj>(TObj obj, DumpDirectives directives, params Expression<Func<TObj, object>>[] selectors)
+        public ObjectDump Dump<TObj>(ObjectDumpSettings<TObj> settings)
         {
-            var properties = DumpProperties(obj, directives, selectors).ToList();
+            var directives = settings.ObjectDirectives;
+            var obj = settings.Object;
+            var properties = DumpProperties(settings.Object, settings.MemberDirectives).ToList();
             string objectTypeName = null;
             List<Metadata> objectMetadata = null;
 
@@ -38,12 +40,19 @@ namespace DotNetNinja.Dumping
                 );
         }
 
-        IEnumerable<PropertyDump> DumpProperties<TObj>(TObj obj, DumpDirectives directives, params Expression<Func<TObj, object>>[] properties)
+        IEnumerable<PropertyDump> DumpProperties<TObj>(TObj obj, Dictionary<string, DumpDirectives> memberDirectives)
         {
-            foreach (var expression in properties)
+            foreach (var keyValue in memberDirectives)
             {
-                var propertyName = ExtractPropertyName(expression);
-                var property = typeof(TObj).GetProperty(propertyName);
+                var memberName = keyValue.Key;
+                var directives = keyValue.Value;
+                
+                var property = typeof(TObj).GetProperty(memberName);
+                if (property == null)
+                {
+                    continue;
+                }
+
                 var propertyValue = property.GetValue(obj);
                 string propertyTypeName = null;
                 List<Metadata> metadata = null;
@@ -61,21 +70,14 @@ namespace DotNetNinja.Dumping
                         .Select(a => a.Metadata)
                         .ToList();
                 }
-                
+
                 if (directives.HasFlag(DumpDirectives.HashCode))
                 {
                     hashCode = obj.GetHashCode().ToString();
                 }
 
-                yield return new PropertyDump(propertyName, propertyValue, metadata, propertyTypeName, hashCode);
+                yield return new PropertyDump(memberName, propertyValue, metadata, propertyTypeName, hashCode);
             }
-        }
-
-        string ExtractPropertyName<TObj>(Expression<Func<TObj, object>> expression)
-        {
-            var unaryExpression = expression.Body as UnaryExpression;
-            var memberExpression = unaryExpression?.Operand as MemberExpression ?? expression.Body as MemberExpression;
-            return memberExpression.Member.Name;
         }
 
         string GetPropertyTypeName(PropertyInfo property)

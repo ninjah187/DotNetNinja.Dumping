@@ -11,10 +11,12 @@ namespace DotNetNinja.Dumping
         TObj _obj;
         IDumper _dumper;
         IConsoleWriter _writer;
-        Dictionary<Expression<Func<TObj, object>>[], DumpDirectives> _settings;
+
+        DumpDirectives _objectDirectives;
+        Dictionary<string, DumpDirectives> _memberDirectives;
 
         DumpDirectives _directivesBuffer;
-        Expression<Func<TObj, object>>[] _selectorsBuffer;
+        string[] _membersBuffer;
 
         public FluentDumping(TObj obj, IDumper dumper, IConsoleWriter consoleWriter)
         {
@@ -22,28 +24,28 @@ namespace DotNetNinja.Dumping
             _dumper = dumper;
             _directivesBuffer = DumpDirectives.None;
             _writer = consoleWriter;
-            _settings = new Dictionary<Expression<Func<TObj, object>>[], DumpDirectives>();
+            _memberDirectives = new Dictionary<string, DumpDirectives>();
         }
 
-        public IFluentDumping<TObj> Dump(params Expression<Func<TObj, object>>[] selectors)
+        public IFluentDumping<TObj> WithProperties(params Expression<Func<TObj, object>>[] selectors)
         {
-            _selectorsBuffer = selectors;
+            FlushBuffer();
+
+            _membersBuffer = selectors.Select(s => ExtractPropertyName(s)).ToArray();
             _directivesBuffer = DumpDirectives.None;
+
             return this;
         }
 
         public void ToConsole()
         {
-            if (_selectorsBuffer != null)
-            {
-                _settings.Add(_selectorsBuffer, _directivesBuffer);
-            }
+            FlushBuffer();
 
-            //_writer.Write(_dumper.Dump(_obj, _di, _properties));
-            foreach (var setting in _settings)
-            {
-                _writer.Write(_dumper.Dump(_obj, setting.Value, setting.Key));
-            }
+            var dumpSettings = new ObjectDumpSettings<TObj>(_obj, _objectDirectives, _memberDirectives);
+
+            var dump = _dumper.Dump(dumpSettings);
+
+            _writer.Write(dump);
         }
 
         public IFluentDumping<TObj> IncludeHashCode()
@@ -64,12 +66,32 @@ namespace DotNetNinja.Dumping
             return this;
         }
 
-        public IFluentDumping<TObj> And(params Expression<Func<TObj, object>>[] selectors)
+        void FlushBuffer()
         {
-            _settings.Add(_selectorsBuffer, _directivesBuffer);
-            _selectorsBuffer = selectors;
+            if (_membersBuffer == null)
+            {
+                if (_directivesBuffer != DumpDirectives.None)
+                {
+                    _objectDirectives = _directivesBuffer;
+                    _directivesBuffer = DumpDirectives.None;
+                }
+                return;
+            }
+
+            foreach (var member in _membersBuffer)
+            {
+                _memberDirectives.Add(member, _directivesBuffer);
+            }
+
+            _membersBuffer = null;
             _directivesBuffer = DumpDirectives.None;
-            return this;
+        }
+
+        string ExtractPropertyName(Expression<Func<TObj, object>> expression)
+        {
+            var unaryExpression = expression.Body as UnaryExpression;
+            var memberExpression = unaryExpression?.Operand as MemberExpression ?? expression.Body as MemberExpression;
+            return memberExpression.Member.Name;
         }
     }
 }

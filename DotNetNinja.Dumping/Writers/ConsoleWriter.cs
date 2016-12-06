@@ -9,12 +9,16 @@ namespace DotNetNinja.Dumping
     {
         public void Write(ObjectDump dump)
         {
-            WriteDump(dump, 0);
-            Console.WriteLine("$ properties:");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("@ object:");
+            WriteDump(dump, 2);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("@ properties:");
             foreach (var property in dump.Properties)
             {
                 WriteProperty(property, 0);
             }
+            Console.WriteLine("---");
 
             Console.ResetColor();
         }
@@ -47,13 +51,13 @@ namespace DotNetNinja.Dumping
 
             foreach (var metadata in dump.Metadata)
             {
-                Console.WriteLine($"{indentation}  > {metadata.Key}: {metadata.Value}");
+                Console.WriteLine($"{indentation}> {metadata.Key}: {metadata.Value}");
             }
 
-            if (dump.Metadata.Count != 0)
-            {
-                Console.WriteLine($"{indentation}  ---");
-            }
+            //if (dump.Metadata.Count != 0)
+            //{
+            //    Console.WriteLine($"{indentation}  ---");
+            //}
         }
 
         string GetIndentation(int indentationLevel)

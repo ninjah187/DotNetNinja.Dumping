@@ -6,12 +6,14 @@ using DotNetNinja.Dumping.Attributes;
 
 namespace DotNetNinja.Dumping
 {
+    [Metadata("Content", "Discover yourself.")]
     public class TestModel
     {
         [Comment("Test comment about a property.")]
         [Metadata("Custom metadata", "Some custom metadata attribute.")]
         public int Integer { get; set; }
         
+        [Comment("It may be The Answer to the Ultimate Question of Life, The Universe, and Everything.")]
         public string String { get; set; }
     }
 }
