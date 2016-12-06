@@ -6,7 +6,7 @@ using DotNetNinja.Dumping.Attributes;
 
 namespace DotNetNinja.Dumping
 {
-    [Metadata("Content", "Discover yourself.")]
+    [Metadata("Content", "Discover by yourself.")]
     public class TestModel
     {
         [Comment("Test comment about a property.")]

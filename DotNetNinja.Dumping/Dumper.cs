@@ -73,7 +73,7 @@ namespace DotNetNinja.Dumping
 
                 if (directives.HasFlag(DumpDirectives.HashCode))
                 {
-                    hashCode = obj.GetHashCode().ToString();
+                    hashCode = propertyValue?.GetHashCode().ToString();
                 }
 
                 yield return new PropertyDump(memberName, propertyValue, metadata, propertyTypeName, hashCode);
