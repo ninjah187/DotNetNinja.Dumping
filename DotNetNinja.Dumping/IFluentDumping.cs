@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace DotNetNinja.Dumping
 {
-    public interface IFluentDumping
+    public interface IFluentDumping<TObj>
     {
-        //IFluentDump Dump<TObj>(TObj obj, params Expression<Func<TObj, object>>[] selectors);
+        IFluentDumping<TObj> And(params Expression<Func<TObj, object>>[] selectors);
 
-        IFluentDumping WithMetadata();
-        IFluentDumping WithMemberInfo();
-        IFluentDumping WithHashCode();
+        IFluentDumping<TObj> WithMetadata();
+        IFluentDumping<TObj> WithMemberInfo();
+        IFluentDumping<TObj> WithHashCode();
 
         string ToString();
         void ToConsole();
