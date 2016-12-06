@@ -46,19 +46,19 @@ namespace DotNetNinja.Dumping
             }
         }
 
-        public IFluentDumping<TObj> WithHashCode()
+        public IFluentDumping<TObj> IncludeHashCode()
         {
             _directivesBuffer |= DumpDirectives.HashCode;
             return this;
         }
 
-        public IFluentDumping<TObj> WithMemberInfo()
+        public IFluentDumping<TObj> IncludeMemberInfo()
         {
             _directivesBuffer |= DumpDirectives.MemberInfo;
             return this;
         }
 
-        public IFluentDumping<TObj> WithMetadata()
+        public IFluentDumping<TObj> IncludeMetadata()
         {
             _directivesBuffer |= DumpDirectives.Metadata;
             return this;

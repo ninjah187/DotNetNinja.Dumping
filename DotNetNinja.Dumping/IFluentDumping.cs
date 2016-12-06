@@ -10,9 +10,9 @@ namespace DotNetNinja.Dumping
     {
         IFluentDumping<TObj> And(params Expression<Func<TObj, object>>[] selectors);
 
-        IFluentDumping<TObj> WithMetadata();
-        IFluentDumping<TObj> WithMemberInfo();
-        IFluentDumping<TObj> WithHashCode();
+        IFluentDumping<TObj> IncludeMetadata();
+        IFluentDumping<TObj> IncludeMemberInfo();
+        IFluentDumping<TObj> IncludeHashCode();
 
         string ToString();
         void ToConsole();

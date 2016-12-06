@@ -10,8 +10,7 @@ namespace DotNetNinja.Dumping
 
             model
                 .Dump(m => m.Integer)
-                    .WithMemberInfo()
-                    .WithMetadata()
+                    .IncludeMemberInfo()
                 .And(m => m.String)
                 .ToConsole();
 
