@@ -13,7 +13,10 @@ namespace DotNetNinja.Dumping
         [Metadata("Custom metadata", "Some custom metadata attribute.")]
         public int Integer { get; set; }
         
-        [Comment("It may be The Answer to the Ultimate Question of Life, The Universe, and Everything.")]
+        [Comment("The Answer to the Ultimate Question of Life, The Universe, and Everything.")]
         public string String { get; set; }
+
+        [Metadata("Note", "Remarks here.")]
+        double _hiddenValue = 0.07;
     }
 }

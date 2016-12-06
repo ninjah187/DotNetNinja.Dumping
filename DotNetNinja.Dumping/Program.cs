@@ -13,7 +13,11 @@ namespace DotNetNinja.Dumping
             };
 
             // tiny dump:
-            //model.Dump().WithProperties(x => x.String, x => x.Integer).ToConsole();
+            model
+                .Dump()
+                .WithProperties(x => x.String, x => x.Integer)
+                .WithFields("_hiddenValue")
+                .ToConsole();
 
             // verbose dump:
             model
@@ -22,6 +26,10 @@ namespace DotNetNinja.Dumping
                     .IncludeMemberInfo()
                     .IncludeMetadata()
                 .WithProperties(x => x.String, x => x.Integer)
+                    .IncludeHashCode()
+                    .IncludeMemberInfo()
+                    .IncludeMetadata()
+                .WithFields("_hiddenValue")
                     .IncludeHashCode()
                     .IncludeMemberInfo()
                     .IncludeMetadata()

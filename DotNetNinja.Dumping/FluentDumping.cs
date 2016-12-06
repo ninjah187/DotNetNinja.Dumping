@@ -37,6 +37,16 @@ namespace DotNetNinja.Dumping
             return this;
         }
 
+        public IFluentDumping<TObj> WithFields(params string[] fields)
+        {
+            FlushBuffer();
+
+            _membersBuffer = fields;
+            _directivesBuffer = DumpDirectives.None;
+
+            return this;
+        }
+
         public void ToConsole()
         {
             FlushBuffer();
@@ -73,8 +83,8 @@ namespace DotNetNinja.Dumping
                 if (_directivesBuffer != DumpDirectives.None)
                 {
                     _objectDirectives = _directivesBuffer;
-                    _directivesBuffer = DumpDirectives.None;
                 }
+                _directivesBuffer = DumpDirectives.None;
                 return;
             }
 

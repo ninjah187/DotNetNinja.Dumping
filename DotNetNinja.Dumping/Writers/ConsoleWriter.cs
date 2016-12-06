@@ -18,6 +18,11 @@ namespace DotNetNinja.Dumping
             {
                 WriteProperty(property, 0);
             }
+            Console.WriteLine("@ fields:");
+            foreach (var field in dump.Fields)
+            {
+                WriteField(field, 0);
+            }
             Console.WriteLine("---");
 
             Console.ResetColor();
@@ -31,6 +36,16 @@ namespace DotNetNinja.Dumping
             Console.WriteLine($"{property.Value}");
 
             WriteDump(property, 2);
+        }
+
+        void WriteField(FieldDump field, int indentationLevel)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"+ {field.Name}: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"{field.Value}");
+
+            WriteDump(field, 2);
         }
 
         void WriteDump(Dump dump, int indentationLevel)
@@ -53,11 +68,6 @@ namespace DotNetNinja.Dumping
             {
                 Console.WriteLine($"{indentation}> {metadata.Key}: {metadata.Value}");
             }
-
-            //if (dump.Metadata.Count != 0)
-            //{
-            //    Console.WriteLine($"{indentation}  ---");
-            //}
         }
 
         string GetIndentation(int indentationLevel)

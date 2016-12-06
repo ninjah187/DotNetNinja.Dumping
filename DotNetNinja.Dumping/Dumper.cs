@@ -11,11 +11,19 @@ namespace DotNetNinja.Dumping
 {
     public class Dumper : IDumper
     {
+        IMemberTypeNameExtractor _typeNameExtractor;
+
+        public Dumper(IMemberTypeNameExtractor typeNameExtractor)
+        {
+            _typeNameExtractor = typeNameExtractor;
+        }
+
         public ObjectDump Dump<TObj>(ObjectDumpSettings<TObj> settings)
         {
             var directives = settings.ObjectDirectives;
             var obj = settings.Object;
             var properties = DumpProperties(settings.Object, settings.MemberDirectives).ToList();
+            var fields = DumpFields(settings.Object, settings.MemberDirectives).ToList();
             string objectTypeName = null;
             List<Metadata> objectMetadata = null;
 
@@ -34,6 +42,7 @@ namespace DotNetNinja.Dumping
 
             return new ObjectDump(
                     properties: properties,
+                    fields: fields,
                     metadata: objectMetadata,
                     typeName: objectTypeName,
                     hashCode: directives.HasFlag(DumpDirectives.HashCode) ? obj.GetHashCode().ToString() : null
@@ -60,7 +69,7 @@ namespace DotNetNinja.Dumping
 
                 if ((directives & DumpDirectives.MemberInfo) == DumpDirectives.MemberInfo)
                 {
-                    propertyTypeName = GetPropertyTypeName(property);
+                    propertyTypeName = _typeNameExtractor.GetMemberTypeName(property);
                 }
 
                 if ((directives & DumpDirectives.Metadata) == DumpDirectives.Metadata)
@@ -80,46 +89,44 @@ namespace DotNetNinja.Dumping
             }
         }
 
-        string GetPropertyTypeName(PropertyInfo property)
+        IEnumerable<FieldDump> DumpFields<TObj>(TObj obj, Dictionary<string, DumpDirectives> memberDirectives)
         {
-            string propertyTypeName = null;
-
-            var typeInfo = property.PropertyType.GetTypeInfo();
-
-            if (typeInfo.IsGenericType)
+            foreach (var keyValue in memberDirectives)
             {
-                var genericDefiniton = property.PropertyType.GetGenericTypeDefinition();
-                var genericArguments = property.PropertyType.GetGenericArguments();
+                var memberName = keyValue.Key;
+                var directives = keyValue.Value;
 
-                var genericName = genericDefiniton.Name;
-                var separatorIndex = genericName.IndexOf('`');
-                genericName = genericName.Remove(separatorIndex, genericName.Length - separatorIndex);
-
-                propertyTypeName = $"{genericName}<";
-
-                foreach (var arg in genericArguments)
+                var field = typeof(TObj).GetField(memberName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                if (field == null)
                 {
-                    if (arg != genericArguments.Last())
-                    {
-                        propertyTypeName += $"{arg.Name}, ";
-                    }
-                    else
-                    {
-                        propertyTypeName += $"{arg.Name}>";
-                    }
+                    continue;
                 }
-            }
-            else
-            {
-                propertyTypeName = property.PropertyType.Name;
-            }
-            
-            if (typeInfo.IsEnum)
-            {
-                propertyTypeName = $"enum {propertyTypeName}";
-            }
 
-            return propertyTypeName;
+                var fieldValue = field.GetValue(obj);
+                string fieldTypeName = null;
+                List<Metadata> metadata = null;
+                string hashCode = null;
+                
+                if ((directives & DumpDirectives.MemberInfo) == DumpDirectives.MemberInfo)
+                {
+                    fieldTypeName = _typeNameExtractor.GetMemberTypeName(field);
+                }
+
+                if ((directives & DumpDirectives.Metadata) == DumpDirectives.Metadata)
+                {
+                    metadata = field
+                        .GetCustomAttributes<MetadataAttribute>()
+                        .Select(a => a.Metadata)
+                        .ToList();
+                }
+
+                if (directives.HasFlag(DumpDirectives.HashCode))
+                {
+                    hashCode = fieldValue?.GetHashCode().ToString();
+                }
+
+                yield return new FieldDump(memberName, fieldValue, metadata, fieldTypeName, hashCode);
+            }
         }
     }
 }

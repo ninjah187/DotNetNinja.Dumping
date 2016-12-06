@@ -9,6 +9,7 @@ namespace DotNetNinja.Dumping
     public interface IFluentDumping<TObj>
     {
         IFluentDumping<TObj> WithProperties(params Expression<Func<TObj, object>>[] selectors);
+        IFluentDumping<TObj> WithFields(params string[] fields);
 
         IFluentDumping<TObj> IncludeMetadata();
         IFluentDumping<TObj> IncludeMemberInfo();
