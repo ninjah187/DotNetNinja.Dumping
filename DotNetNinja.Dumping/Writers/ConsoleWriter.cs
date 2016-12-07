@@ -64,9 +64,12 @@ namespace DotNetNinja.Dumping
                 Console.WriteLine($"{indentation}$ type: {dump.TypeName}");
             }
 
-            foreach (var metadata in dump.Metadata)
+            if (dump.Metadata != null)
             {
-                Console.WriteLine($"{indentation}> {metadata.Key}: {metadata.Value}");
+                foreach (var metadata in dump.Metadata)
+                {
+                    Console.WriteLine($"{indentation}> {metadata.Key}: {metadata.Value}");
+                }
             }
         }
 

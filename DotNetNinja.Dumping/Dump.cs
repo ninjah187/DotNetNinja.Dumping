@@ -13,7 +13,7 @@ namespace DotNetNinja.Dumping
 
         public Dump(List<Metadata> metadata = null, string typeName = null, string hashCode = null)
         {
-            Metadata = metadata ?? new List<Metadata>();
+            Metadata = metadata;
             TypeName = typeName;
             HashCode = hashCode;
         }

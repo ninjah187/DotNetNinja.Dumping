@@ -10,7 +10,9 @@ namespace DotNetNinja.Dumping
     {
         TObj _obj;
         IDumper _dumper;
-        IConsoleWriter _writer;
+
+        IConsoleWriter _consoleWriter;
+        IJsonWriter _jsonWriter;
 
         DumpDirectives _objectDirectives;
         Dictionary<string, DumpDirectives> _memberDirectives;
@@ -18,12 +20,13 @@ namespace DotNetNinja.Dumping
         DumpDirectives _directivesBuffer;
         string[] _membersBuffer;
 
-        public FluentDumping(TObj obj, IDumper dumper, IConsoleWriter consoleWriter)
+        public FluentDumping(TObj obj, IDumper dumper, IConsoleWriter consoleWriter, IJsonWriter jsonWriter)
         {
             _obj = obj;
             _dumper = dumper;
             _directivesBuffer = DumpDirectives.None;
-            _writer = consoleWriter;
+            _consoleWriter = consoleWriter;
+            _jsonWriter = jsonWriter;
             _memberDirectives = new Dictionary<string, DumpDirectives>();
         }
 
@@ -49,14 +52,13 @@ namespace DotNetNinja.Dumping
 
         public void ToConsole()
         {
-            FlushBuffer();
+            var dump = Dump();
 
-            var dumpSettings = new ObjectDumpSettings<TObj>(_obj, _objectDirectives, _memberDirectives);
-
-            var dump = _dumper.Dump(dumpSettings);
-
-            _writer.Write(dump);
+            _consoleWriter.Write(dump);
         }
+
+        public string ToJson()
+            => _jsonWriter.Write(Dump());
 
         public IFluentDumping<TObj> IncludeHashCode()
         {
@@ -74,6 +76,17 @@ namespace DotNetNinja.Dumping
         {
             _directivesBuffer |= DumpDirectives.Metadata;
             return this;
+        }
+
+        ObjectDump Dump()
+        {
+            FlushBuffer();
+
+            var dumpSettings = new ObjectDumpSettings<TObj>(_obj, _objectDirectives, _memberDirectives);
+
+            var dump = _dumper.Dump(dumpSettings);
+
+            return dump;
         }
 
         void FlushBuffer()

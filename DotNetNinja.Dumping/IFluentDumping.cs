@@ -17,5 +17,6 @@ namespace DotNetNinja.Dumping
 
         string ToString();
         void ToConsole();
+        string ToJson();
     }
 }
