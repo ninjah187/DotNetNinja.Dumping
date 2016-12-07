@@ -1,11 +1,14 @@
 {
   "version": "0.1.0",
   "buildOptions": {
-    "debugType": "portable"
+    "debugType": "portable",
+    "emitEntryPoint": true
   },
+
   "dependencies": {
-    "Newtonsoft.Json": "9.0.1"
+    "DotNetNinja.Dumping": "0.1.0"
   },
+
   "frameworks": {
     "netcoreapp1.0": {
       "dependencies": {
