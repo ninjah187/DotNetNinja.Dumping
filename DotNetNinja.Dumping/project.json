@@ -1,11 +1,14 @@
 {
   "version": "0.1.0",
+
   "buildOptions": {
     "debugType": "portable"
   },
+
   "dependencies": {
     "Newtonsoft.Json": "9.0.1"
   },
+
   "frameworks": {
     "netcoreapp1.0": {
       "dependencies": {
@@ -15,5 +18,9 @@
         }
       }
     }
+  },
+
+  "scripts": {
+    "postcompile": [ "dotnet pack --no-build --output C:\\ProgramData\\NuGet.local" ]
   }
 }
